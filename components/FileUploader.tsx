@@ -1,10 +1,11 @@
 "use client";
 import { useRef } from "react";
-import { Control, Controller, FieldValues } from "react-hook-form";
+import { Controller, FieldValues } from "react-hook-form";
 import { Field, FieldError, FieldLabel } from "./ui/field";
 import { Input } from "./ui/input";
 import {  X } from "lucide-react";
 import { FileType, FileUploaderProps } from "@/type";
+import {ACCEPTED_IMAGE_TYPES} from "@/lib/constant";
 
 const ACCEPT_MAP: Record<FileType, string> = {
   image: "image/*",
@@ -12,7 +13,7 @@ const ACCEPT_MAP: Record<FileType, string> = {
 };
 
 const VALID_TYPES: Record<FileType, (file: File) => boolean> = {
-  image: (f) => f.type.startsWith("image/"),
+  image: (f) => ACCEPTED_IMAGE_TYPES.includes(f.type),
   pdf: (f) => f.type === "application/pdf",
 };
     

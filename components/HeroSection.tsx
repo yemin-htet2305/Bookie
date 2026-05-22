@@ -3,6 +3,7 @@ import { Show, SignInButton } from '@clerk/nextjs'
 import Image from 'next/image'
 import Link from 'next/link'
 import { FileUp, Cpu, MessageCircle } from 'lucide-react'
+import { ROUTE } from '@/route'
 
 const steps = [
   {
@@ -59,11 +60,11 @@ export default function HeroSection() {
                 </SignInButton>
               </Show>
               <Show when="signed-in">
-                <Link href="/add-new" className="btn-primary text-lg px-8 py-3.5">
+                <Link href={ROUTE.NEW_BOOK} className="btn-primary text-lg px-8 py-3.5">
                   Add New Book
                 </Link>
-              </Show>
-              <Link
+                </Show>
+                <Link
                 href="/library"
                 className="btn-secondary text-lg px-8 py-3.5 border border-(--border-medium)"
               >

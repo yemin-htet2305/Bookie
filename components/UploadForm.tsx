@@ -32,14 +32,14 @@ export default function UploadForm() {
         name="book" label="Upload Book in PDF Format" 
         accept="pdf"  
         placeholder="Select a PDF file"
-        hint="Only PDF files are accepted. Max size: 10MB."
+        hint="Only PDF files are accepted. Max size: 50MB."
         icon={Upload}/>
         <FileUploader control={form.control} 
         name="cover" 
         label="Upload Cover Image" 
         accept="image"  
         placeholder="Select an image file"
-        hint="Only image files are accepted. Max size: 5MB."
+        hint="Only image files are accepted. Max size: 10MB."
         icon={ImageUp}/>
         <Controller 
           name="title"
