@@ -58,14 +58,28 @@ export const createBook = async (data: CreateBook) => {
         const existingBook = await Book.findOne({slug});
         if(existingBook){
             return {
-                success: true,
-                book: serialzeData(existingBook),
-                alreadyExists: true
+                success: false,
+                alreadyExists: true,
+                book: null,
+                error: "A book with this title already exists."
             }
         }
         //Todo check user's subscription and limit number of books they can upload
 
-        const newBook = await Book.create({...data,slug});
+        let newBook;
+        try {
+            newBook = await Book.create({...data, slug});
+        } catch (createError) {
+            if ((createError as any)?.code === 11000) {
+                return {
+                    success: false,
+                    alreadyExists: true,
+                    book: null,
+                    error: "A book with this title already exists."
+                }
+            }
+            throw createError;
+        }
         return {
             success: true,
             book: serialzeData(newBook),
@@ -80,6 +94,7 @@ export const createBook = async (data: CreateBook) => {
     }
 }
 export const saveBookSegments = async (bookId:string, clerkId:string,segments: TextSegment[]) => {
+    let insertedIds: unknown[] = [];
     try{
         await connectdb();
 
@@ -92,7 +107,8 @@ export const saveBookSegments = async (bookId:string, clerkId:string,segments: T
             pageNumber,
             wordCount
         }));
-        await BookSegment.insertMany(segmentsToInsert);
+        const inserted = await BookSegment.insertMany(segmentsToInsert);
+        insertedIds = inserted.map(doc => doc._id);
         await Book.findByIdAndUpdate(bookId, { $set: { totalSegments: segments.length } });
         console.log('Segments saved successfully');
         return {
@@ -102,8 +118,11 @@ export const saveBookSegments = async (bookId:string, clerkId:string,segments: T
             }
         }
     }catch(e){
-        await BookSegment.deleteMany({bookId});
-        await Book.findByIdAndDelete(bookId);
+        if(insertedIds.length > 0){
+            await BookSegment.deleteMany({ _id: { $in: insertedIds } });
+            await Book.findByIdAndDelete(bookId);
+            console.log('Rolled back inserted segments and book due to error');
+        }
         return{
             success: false,
             error: e instanceof Error ? e.message : "An unknown error occurred while saving segments"

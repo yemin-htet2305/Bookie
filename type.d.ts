@@ -1,6 +1,6 @@
 import { Document, Types } from 'mongoose';
 import { ReactNode } from 'react';
-import { Control, FieldPath, FieldValues } from 'react-hook-form';
+import { Control, FieldPath, FieldValues, Path } from 'react-hook-form';
 import { LucideIcon } from 'lucide-react';
 import z from 'zod';
 
