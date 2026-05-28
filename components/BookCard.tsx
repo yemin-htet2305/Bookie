@@ -3,7 +3,7 @@ import Image from 'next/image'
 import React from 'react'
 
 export default function BookCard({ id, title, author, slug, cover }: BookCardProps) {
-  return (
+  return (  
     <article className='book-card'>
         <figure className='book-cover'>
             <div className='book-card-cover-wrapper'>
